@@ -1,0 +1,6 @@
+pandas
+matplotlib
+ta
+alpaca-trade-api
+ntscraper
+vaderSentiment

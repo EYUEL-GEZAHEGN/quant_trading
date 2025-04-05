@@ -1,0 +1,11 @@
+Metadata-Version: 2.1
+Name: quant_trading
+Version: 0.1
+Summary: Quant trading bot framework with live and backtest support
+Author: Your Name
+Requires-Dist: pandas
+Requires-Dist: matplotlib
+Requires-Dist: ta
+Requires-Dist: alpaca-trade-api
+Requires-Dist: ntscraper
+Requires-Dist: vaderSentiment
