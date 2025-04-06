@@ -15,6 +15,7 @@ src/risk/risk_manager.py
 src/strategy/__init__.py
 src/strategy/base.py
 src/strategy/breakout.py
+src/strategy/harris_candles.py
 src/strategy/mean_reversion.py
 src/strategy/mixed_signal.py
 src/strategy/sentiment_strategy.py

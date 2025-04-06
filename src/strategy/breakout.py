@@ -3,7 +3,7 @@ import pandas as pd
 
 class BreakoutBot(Strategy):
     def __init__(self, symbol):
-        self.symbol = symbol
+        super().__init__(symbol)
 
     def generate_signals(self, data: pd.DataFrame) -> pd.DataFrame:
         data['signal'] = 0
@@ -13,7 +13,7 @@ class BreakoutBot(Strategy):
         data['low_20'] = data['low'].rolling(window=20).min()
 
         data['signal'] = 0
-        data.loc[data['close'] > data['high_20'], 'signal'] = 1   # Breakout long
-        data.loc[data['close'] < data['low_20'], 'signal'] = -1  # Breakdown short
+        data.loc[data['close'] > data['high_20'], 'signal'] = 2   # Breakout long
+        data.loc[data['close'] < data['low_20'], 'signal'] = 1  # Breakdown short
 
         return data

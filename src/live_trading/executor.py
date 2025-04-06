@@ -6,12 +6,12 @@ from alpaca.data.requests import StockBarsRequest
 from alpaca.data.timeframe import TimeFrame
 
 from db.utils import log_trade
-from config import settings
+from src import settings
 import pandas as pd
 import time
 
-trading_client = TradingClient(settings.ALPACA_API_KEY, settings.ALPACA_SECRET_KEY, paper=settings.PAPER_TRADING)
-data_client = StockHistoricalDataClient(settings.ALPACA_API_KEY, settings.ALPACA_SECRET_KEY)
+trading_client = TradingClient(settings.ALPACA_API_KEY, settings.ALPACA_API_SECRET, paper=settings.PAPER_TRADING)
+data_client = StockHistoricalDataClient(settings.ALPACA_API_KEY, settings.ALPACA_API_SECRET)
 
 # Store one open trade's SL/TP levels
 open_trade = {}

@@ -15,7 +15,7 @@ from typing import Dict, Any, Type, List, Optional
 sys.path.append(str(Path(__file__).parent))
 
 from backtest.engine import run_backtest
-from data.data_loader import load_data
+from data_loader import load_data
 
 # Set up logging
 logging.basicConfig(

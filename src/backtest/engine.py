@@ -1,10 +1,8 @@
 from src.data_loader import load_data, load_pair_data
 import matplotlib.pyplot as plt
 
-def run_backtest(StrategyClass, symbol, start_date, end_date):
-    # Instantiate strategy
-    strategy = StrategyClass(symbol)
-
+def run_backtest(strategy, symbol, start_date, end_date):
+    """Run backtest for a given strategy and symbol."""
     # Load data for single or pair strategy
     if strategy.__class__.__name__ == "StatArbBot":
         data = load_pair_data(symbol, strategy.pair_symbol, start_date, end_date)
@@ -16,7 +14,6 @@ def run_backtest(StrategyClass, symbol, start_date, end_date):
     print(signals['signal'].value_counts(dropna=False).sort_index())
     print("\n📄 Preview of Signals:")
     print(signals[['signal']].tail(10))
-
 
     # Determine which price column to use
     if strategy.__class__.__name__ == "StatArbBot":
@@ -48,7 +45,17 @@ def run_backtest(StrategyClass, symbol, start_date, end_date):
 
     # Optional plot
     if 'zscore' in signals.columns:
-        signals['zscore'].plot(title="Z-Score")
-    else:
-        signals['signal'].plot(title="Trading Signals")
-    plt.show()
+        plt.figure(figsize=(12, 6))
+        plt.plot(signals.index, signals['zscore'], label='Z-Score')
+        plt.axhline(y=1.5, color='r', linestyle='--', label='Upper Band')
+        plt.axhline(y=-1.5, color='g', linestyle='--', label='Lower Band')
+        plt.title(f'{symbol} Z-Score')
+        plt.legend()
+        plt.show()
+
+    return {
+        'symbol': symbol,
+        'return': (final_value - 10000) / 10000,
+        'sharpe_ratio': 0.0,  # TODO: Calculate Sharpe ratio
+        'max_drawdown': 0.0   # TODO: Calculate max drawdown
+    }
