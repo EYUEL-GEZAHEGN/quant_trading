@@ -7,6 +7,11 @@ class MeanReversionBot(Strategy):
         Mean Reversion Strategy:
         - Buy when z-score < -1.5
         - Sell when z-score > 1.5
+        
+        Signal values:
+        - 2 = Bullish
+        - 1 = Bearish
+        - 0 = Neutral/Hold
         """
         # Calculate daily returns
         data['returns'] = data['close'].pct_change()
@@ -18,9 +23,9 @@ class MeanReversionBot(Strategy):
         # Z-score
         data['zscore'] = (data['returns'] - data['mean']) / data['std']
 
-        # Generate signal: 1 = Buy, -1 = Sell, 0 = Hold
-        data['signal'] = 0
-        data.loc[data['zscore'] > 1.5, 'signal'] = -1
-        data.loc[data['zscore'] < 1.5, 'signal'] = 1
+        # Generate signal: 2 = Bullish, 1 = Bearish, 0 = Neutral/Hold
+        data['signal'] = 0  # Default to neutral/hold
+        data.loc[data['zscore'] > 1.5, 'signal'] = 1  # Bearish
+        data.loc[data['zscore'] < -1.5, 'signal'] = 2  # Bullish
 
         return data
