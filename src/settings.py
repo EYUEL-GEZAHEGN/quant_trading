@@ -18,14 +18,14 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # API Credentials
-ALPACA_API_KEY = os.getenv("ALPACA_API_KEY_ID")  # Updated to match .env file
-ALPACA_API_SECRET = os.getenv("ALPACA_SECRET_KEY")  # Updated to match .env file
+ALPACA_API_KEY_ID = os.getenv("ALPACA_API_KEY_ID")  # Updated to match .env file
+ALPACA_API_SECRET_KEY = os.getenv("ALPACA_API_SECRET_KEY")  # Updated to match .env file
 ALPACA_BASE_URL = os.getenv("ALPACA_BASE_URL", "https://paper-api.alpaca.markets")
-PAPER_TRADING = ALPACA_BASE_URL == "https://paper-api.alpaca.markets"
+PAPER_TRADING = True
 
 # Print API credentials for debugging
-print(f"API Key: {ALPACA_API_KEY}")
-print(f"Paper Trading: {PAPER_TRADING}")
+#print(f"API Key: {ALPACA_API_KEY}")
+#print(f"Paper Trading: {PAPER_TRADING}")
 
 # Database Configuration
 DB_PATH = os.getenv("DB_PATH", "db/market_data.db")
@@ -39,7 +39,7 @@ MOMENTUM_THRESHOLD = float(os.getenv("MOMENTUM_THRESHOLD", "0.005"))
 
 # Trading Configuration
 TRADING_MODE = os.getenv("TRADING_MODE", "paper")  # Options: paper, live
-STRATEGY = os.getenv("STRATEGY", "mean_reversion")  # Options: mean_reversion, breakout, stat_arb, sentiment, technical, mixed
+STRATEGY = os.getenv("STRATEGY", "harris_candles")  # Options: mean_reversion, breakout, stat_arb, sentiment, technical, mixed
 SYMBOL = os.getenv("SYMBOL", "TQQQ")
 PAIR_SYMBOL = os.getenv("PAIR_SYMBOL", "SQQQ")  # For stat_arb strategy
 

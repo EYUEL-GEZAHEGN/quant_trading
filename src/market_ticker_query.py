@@ -46,7 +46,7 @@ class MarketTickerQuery:
         """Initialize the MarketTickerQuery class."""
         # Initialize Alpaca client
         self.api_key = os.getenv("ALPACA_API_KEY_ID")
-        self.api_secret = os.getenv("ALPACA_SECRET_KEY")
+        self.api_secret = os.getenv("ALPACA_API_SECRET_KEY")
         self.base_url = os.getenv("ALPACA_BASE_URL", "https://paper-api.alpaca.markets")
         
         if not self.api_key or not self.api_secret:
@@ -306,7 +306,8 @@ class MarketTickerQuery:
             "PG", "MA", "HD", "BAC", "DIS", "NFLX", "ADBE", "CSCO", "PFE", "INTC",
             "VZ", "KO", "PEP", "T", "ABT", "MRK", "ABBV", "AVGO", "TMO", "QCOM",
             "CVX", "ACN", "LLY", "DHR", "MCD", "NKE", "PM", "UNH", "UPS", "IBM",
-            "LOW", "MS", "RTX", "HON", "LMT", "BA", "CAT", "DE", "MMM", "GE"
+            "LOW", "MS", "SQQQ", "TQQQ", "SOXL", "LABU", "FNGU", "SPXL"
+
         ]
         
         # Limit the number of symbols
@@ -337,7 +338,8 @@ class MarketTickerQuery:
             
             # Add to results
             self.results.append(metrics)
-            
+            # Sort by descending score
+            self.results = sorted(self.results, key=lambda x: x["score"], reverse=True)
             # Sleep to avoid rate limiting
             time.sleep(0.1)
         

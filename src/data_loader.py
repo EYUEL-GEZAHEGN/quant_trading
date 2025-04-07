@@ -6,7 +6,7 @@ import pandas as pd
 import os
 from datetime import datetime
 
-client = StockHistoricalDataClient(settings.ALPACA_API_KEY, settings.ALPACA_API_SECRET)
+client = StockHistoricalDataClient(settings.ALPACA_API_KEY_ID, settings.ALPACA_API_SECRET_KEY)
 
 def load_data(symbol: str, start_date: str, end_date: str, timeframe: str = "1Min") -> pd.DataFrame:
     cache_dir = f"data/cache"
