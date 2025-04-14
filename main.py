@@ -1,50 +1,36 @@
-import os
-import sys
-import logging
-from dotenv import load_dotenv
+from strategy.crypto_strategy import CryptoMomentumStrategy
+from data_loader.live import start_streaming, get_latest_bar
+from trade_executor.executor import AlpacaClient
+import time
 
-from src.trading.live_trader import LiveTrader
-from src.trading.factory import StrategyFactory
-from src.utils.logger import setup_logger
-from src.market_ticker_query import MarketTickerQuery  # ✅ symbol scorer
+strategy = CryptoMomentumStrategy()
+symbols = strategy.get_target_symbols()
 
-def main():
-    # Load environment variables from .env
-    load_dotenv()
+# Start WebSocket and stream
+if not start_streaming(symbols):
+    exit()
 
-    # Setup logging
-    setup_logger()
-    logger = logging.getLogger(__name__)
+print(f"🚀 Live trading started for symbols: {symbols}")
 
-    try:
-        # 🎯 Configuration
-        strategy_name = os.getenv("STRATEGY", "micro_momentum")
-        interval = os.getenv("INTERVAL", "5m")
-        max_cvar_threshold = float(os.getenv("MAX_CVAR_THRESHOLD", 0.04))  # 4%
-        top_n = int(os.getenv("TOP_N", 10))  # how many symbols to trade
+executor = AlpacaClient()
+last_signal_time = {}
+TRADE_COOLDOWN = 60  # seconds
 
-        # 🧠 Rank top tickers using your internal scoring system
-        scorer = MarketTickerQuery()
-        ranked = scorer.analyze_symbols(max_symbols=50)
-        top_symbols = [s["symbol"] for s in ranked if s["score"] > 0.7][:top_n]
+while True:
+    for symbol in symbols:
+        bar = get_latest_bar(symbol)
+        if bar is None or bar.empty:
+            continue
 
-        if not top_symbols:
-            logger.warning("No top symbols found with score > 0.7")
-            sys.exit(1)
+        print(f"📊 Latest bar for {symbol}:\n{bar}")  # <--- add this to verify
+        signal = strategy.generate_signal(symbol, bar)
 
-        logger.info(f"Top {len(top_symbols)} symbols selected: {top_symbols}")
+        if signal == "BUY":
+            print(f"🚀 {symbol} signal is BUY — submitting order")
+            executor.submit_order(symbol, qty=1, side="BUY")
+            last_signal_time[symbol] = time.time()
+        elif signal == "SELL":
+            print(f"🔻 {symbol} signal is SELL — submitting order")
+            executor.submit_order(symbol, qty=1, side="SELL")
 
-        # 🔁 Run trader for each selected symbol
-        for symbol in top_symbols:
-            strategy = StrategyFactory.create_strategy(strategy_name, symbol)
-            trader = LiveTrader(strategy, symbol, interval, max_cvar_threshold=max_cvar_threshold)
-
-            logger.info(f"Starting live trading for {symbol} using {strategy_name} strategy with CVaR threshold {max_cvar_threshold}")
-            trader.start()
-
-    except Exception as e:
-        logger.error(f"❌ Error in main: {str(e)}")
-        sys.exit(1)
-
-if __name__ == "__main__":
-    main()
+    time.sleep(5)

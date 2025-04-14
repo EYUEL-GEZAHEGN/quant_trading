@@ -1,4 +1,0 @@
-backtest
-config
-risk
-strategy
